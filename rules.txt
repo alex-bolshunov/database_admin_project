@@ -28,7 +28,6 @@ Table phone_numbers {
 Table credit_cards {
   credit_card_id int [primary key]
   customer_id int [not null]
-  payment_id int [not null]
   card_number varchar(16) [not null]
   cardholder_name varchar(50) [not null]
   exp_date date [not null]
@@ -43,9 +42,8 @@ Table pickers {
 }
 
 Table pickers_orders {
-  id int [primary key]
-  order_id int [not null]
-  picker_id int [not null]
+  order_id int [primary key]
+  picker_id int [primary key]
 }
 
 Table payments {
@@ -63,7 +61,6 @@ Table payments {
 Table orders {
   order_id int [primary key]
   customer_id int [not null]
-  payment_id int [not null]
   order_date date [not null]
   order_status varchar(50) [not null]
   comment varchar(250)
@@ -74,20 +71,22 @@ Table products {
   product_id int [primary key]
   product_name varchar(100) [not null]
   producer varchar(100) [not null]
-  category int [not null]
-  is_by_weight binary [not null]
+  category_id int [not null]
   price decimal(8,2) [not null]
   stock int [not null]
   description text
 }
 
-Table order_details {
-  id int [primary key]
-  order_id int [not null]
-  product_id int [not null]
+Table order_product_details {
+  order_id int [primary key]
+  product_id int [primary key]
   quantity int [not null]
-  weight decimal(8,2) [not null]
   total_price decimal(8,2) [not null]
+}
+
+Table categories {
+  category_id int [primary key]
+  name varchar(50) [not null]
 }
 
 
@@ -103,15 +102,17 @@ Ref: payments.payment_id - orders.order_id
 
 Ref: credit_cards.credit_card_id - payments.payment_id
 
-Ref: orders.order_id < pickers_orders.id
+Ref: orders.order_id < pickers_orders.order_id
 
-Ref: pickers.picker_id < pickers_orders.id
+Ref: pickers.picker_id < pickers_orders.picker_id
 
-Ref: products.product_id < order_details.id
+Ref: products.product_id < order_product_details.product_id
 
-Ref: orders.order_id < order_details.id
+Ref: orders.order_id < order_product_details.order_id
 
 Ref: customers.customer_id < emails.email_id
+
+Ref: categories.category_id < products.category_id
 
 // Ref: pickers.picker_id < phone_numbers.phone_number_id
 

@@ -1,0 +1,24 @@
+Customer:
+	Customer Orders: What are the details of all orders placed by a specific customer?
+	Order Frequency: How often does a specific customer place orders?
+	Customer Loyalty: Which customers are the most loyal based on their order frequency and total spend?
+	Customer Preferences: What are the most frequently purchased products by a specific customer?
+	Order History: What is the complete order history for a specific customer?
+	Customer Registration: How many new customers have registered in a specific period?
+
+Orders:
+	Order Status: What is the current status of a particular order?
+	Order Quantity: What is the number of orders placed within specified period? 
+
+Products:
+	Product Availability: Is a specific product available in stock?
+	Inventory Levels: What are the current stock levels for all products?
+	Top-Selling Products: Which products are the top sellers in a given period?
+
+Payments:
+	Sales Performance: What are the total sales for a specific period (e.g., daily, weekly, monthly)?
+	Payment Status: What is the payment status of a particular order (e.g., paid, pending, declined)?
+
+Pickers:
+	Collector Performance: What is a number of orders collected by a picker?
+	Collector Performance: Who is the best picker within specified period? 
