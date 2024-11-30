@@ -2,12 +2,14 @@
 --1
 --1 sales summary
 --accepts one parameter - num of days, uses custom function get_date_specified_period 
-create procedure s24240370.get_sales_summary_ProfG_FP @num_of_days int = 30
+create or alter procedure s24240370.get_sales_summary_ProfG_FP @num_of_days int = 100
 as
 begin
-	select count(t.num_products) as number_of_orders, round(avg(total), 2) as average_order_value, sum(total) as revenue, @num_of_days as number_of_days
+	--use subquery to group by customer id
+	--use aggrigation functions to calculate num of orders, average and total revenue
+	select count(t.num_orders) as number_of_orders, round(avg(total), 2) as average_order_value, sum(total) as revenue, @num_of_days as number_of_days
 	from (
-		select count(1) as num_products, sum(op.total_price) as total  
+		select count(1) as num_orders, sum(op.total_price) as total  
 		from s24240370.orders_ProfG_FP o
 		join s24240370.order_product_details_ProfG_FP op
 		on o.order_id = op.order_id
@@ -16,12 +18,13 @@ begin
 end
 go
 
-
 --2
 --3 Order Frequency
-create procedure s24240370.get_order_frequency_ProfG_FP @cust_id int
+-- accepts customer id
+create or alter procedure s24240370.get_order_frequency_ProfG_FP @cust_id int
 as
 begin 
+	--group by the month, count number of orders in each month
 	select datepart(month, order_date) as month, count(o.order_id) as num_orders
 	from s24240370.orders_ProfG_FP o
 	right join s24240370.customers_ProfG_FP c
@@ -33,10 +36,12 @@ go
 
 
 --3 (json)
---4 Customer Preferences, 
-create procedure s24240370.get_customer_preferences_json_ProfG_FP @cust_id int
+--4 Customer Preferences
+--accepts customer id 
+create or alter procedure s24240370.get_customer_preferences_json_ProfG_FP @cust_id int
 as
 begin
+	-- join orders and products, filter by cust id, group by product id and name, json 
 	select top 5 p.product_id, p.product_name, sum(op.quantity) as quantity 
 	from s24240370.orders_ProfG_FP o
 	join s24240370.order_product_details_ProfG_FP op
@@ -52,10 +57,13 @@ go
 
 
 --4
---7 Frequent Cancelers, uses - full name function 
-create procedure s24240370.get_frequent_cancelers_ProfG_FP @num_of_days int = 100, @threshold int = 1
+--7 Frequent Cancelers, uses - full name function
+--accepts number of days and threshold 
+create or alter procedure s24240370.get_frequent_cancelers_ProfG_FP @num_of_days int = 100, @threshold int = 1
 as
 begin
+	--join customers and orders, filter on type of the order, group by customer id and full name
+	--filter groups by the number of canceled orders
 	select c.customer_id, s24240370.get_full_name_ProfG_FP(c.customer_id) as full_name, count(o.order_id)  as num_canceled_orders, @num_of_days as last_num_days
 	from s24240370.customers_ProfG_FP c
 	join s24240370.orders_ProfG_FP o
@@ -71,12 +79,14 @@ go
 
 --5
 --8 Customer Credit Card Count Report
-create procedure s24240370.get_customer_credit_card_count_ProfG_FP @cust_id int
+--accepts customer id 
+create or alter procedure s24240370.get_customer_credit_card_count_ProfG_FP @cust_id int
 as
 begin
+	--join customers and credit cards, show card id and card number 
 	select cc.credit_card_id, cc.card_number
 	from s24240370.customers_ProfG_FP c
-	right join s24240370.credit_cards_ProfG_FP cc
+	left join s24240370.credit_cards_ProfG_FP cc
 	on c.customer_id = cc.customer_id
 	where c.customer_id = @cust_id
 end
@@ -85,9 +95,12 @@ go
 
 --6 (json)
 --12 Order Status
-create procedure s24240370.get_order_details_ProfG_FP @order_id int
+--accepts order id 
+create or alter procedure s24240370.get_order_details_ProfG_FP @order_id int
 as
 begin
+	--join customers, orders and order details, filter on order id, group by repeated fields
+	--show order id, status, full name, total price, number of units in the order, date, and comment
 	select o.order_id, o.order_status, s24240370.get_full_name_ProfG_FP(c.customer_id) as full_name, 
 			sum(op.total_price) as total_price, sum(op.quantity) as num_of_units, o.order_date, o.comment
 	from s24240370.orders_ProfG_FP o
@@ -104,9 +117,11 @@ go
 
 --7 (json)
 --14 Payment Status
-create procedure s24240370.get_payment_status_ProfG_FP @order_id int
+--accepts order id
+create or alter procedure s24240370.get_payment_status_ProfG_FP @order_id int
 as
 begin
+	--join, orders, payments, and credit cards, filter on order id, json
 	select o.order_id, p.amount, c.card_number, p.status, p.payment_date 
 	from s24240370.orders_ProfG_FP o 
 	join s24240370.payments_ProfG_FP p

@@ -22,7 +22,7 @@ go
 --How often does a specific customer place an order?
 --The report lists information on the number of orders placed by a specific customer each month.
 --select c.customer_id, c.first_name + ' ' + c.last_name as full_name,  DATEPART(MONTH, order_date) as month, COUNT(o.order_id) as num_orders
-declare @cust_id int = 3
+declare @cust_id int = 2
 exec s24240370.get_order_frequency_ProfG_FP @cust_id --accept 1 required parameter, customer it, no default 
 
 go
@@ -123,9 +123,12 @@ order by p.reorder_level
 --Order Status
 --What is the status of a particular order?
 --The report provides the status of a specified order: order id, name on the order, status, total price, number of products in the order, and comment. 
-declare @order_id int = 20
+declare @order_id int = 31
 exec s24240370.get_order_details_ProfG_FP  @order_id --accepts one required parameter order id, json 
 go
+
+select top 1 * from s24240370.orders_ProfG_FP
+order by order_id desc 
 
 --13
 --Order Quantity 

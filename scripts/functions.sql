@@ -1,8 +1,6 @@
-go
-
 --function to validate email
 --used in procedures: s24240370.add_customer_ProfG_FP 
-create function s24240370.is_valid_email_ProfG_FP(@email varchar(100))
+create or alter function s24240370.is_valid_email_ProfG_FP(@email varchar(100))
 returns bit
 as
 begin
@@ -18,7 +16,7 @@ go
 
 --funciton to validate phone number
 --used in procedures: s24240370.add_customer_ProfG_FP 
-create function s24240370.is_valid_phone_number_ProfG_FP(@phone_number varchar(10))
+create or alter function s24240370.is_valid_phone_number_ProfG_FP(@phone_number varchar(10))
 returns bit
 as
 begin
@@ -33,7 +31,7 @@ go
 
 --function to return full name
 --used in procedures: s24240370.get_frequent_cancelers_ProfG_FP
-create function s24240370.get_full_name_ProfG_FP(@cust_id int)
+create or alter function s24240370.get_full_name_ProfG_FP(@cust_id int)
 returns varchar(100)
 as
 begin
@@ -49,14 +47,13 @@ go
 
 --returns a date for a specified number of days ago from today's date
 --used in procedures: s24240370.get_frequent_cancelers_ProfG_FP, s24240370.get_sales_summary_ProfG_FP
-create function s24240370.get_date_specified_period_ProfG_FP(@num_days int)
+create or alter function s24240370.get_date_specified_period_ProfG_FP(@num_days int)
 returns date
 as
 begin
 	return dateadd(day, @num_days * -1, getdate())
 end
-
-
+go
 
 
 

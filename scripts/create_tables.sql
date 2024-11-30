@@ -39,7 +39,8 @@ create table  s24240370.phone_numbers_ProfG_FP(
     phone_number_id INT PRIMARY KEY IDENTITY(1,1),
     customer_id INT,
     phone_number VARCHAR(10) MASKED WITH (FUNCTION = 'partial(0,"XXXXXX",4)') UNIQUE NOT NULL,
-    type VARCHAR(50) check(type in('home','mobile', 'work'))
+    type VARCHAR(6) check(type in('home','mobile', 'work')),
+	constraint uc_customer_phone_number_type unique (customer_id, type)
 )
 go
 
@@ -48,7 +49,8 @@ create table s24240370.emails_ProfG_FP (
     email_id INT PRIMARY KEY IDENTITY(1,1),
     customer_id INT,
     email_address VARCHAR(100) MASKED WITH (FUNCTION = 'email()') UNIQUE NOT NULL,
-    type VARCHAR(50) check(type in('primary','secondary')) default 'primary'
+    type VARCHAR(9) check(type in('primary','secondary')) default 'primary',
+	constraint uc_customer_email_type unique (customer_id, type)
 )
 go
 
@@ -57,7 +59,7 @@ create table s24240370.orders_ProfG_FP (
     order_id INT PRIMARY KEY IDENTITY(1,1),
     customer_id INT,
     order_date DATE DEFAULT GETDATE(),
-    order_status VARCHAR(50) NOT NULL CHECK (order_status in ('collected', 'processing', 'received', 'canceled', 'on hold')),
+    order_status VARCHAR(20) NOT NULL CHECK (order_status in ('collected', 'processing', 'received', 'canceled', 'on hold')),
 	comment VARCHAR(50)
 )
 go
@@ -93,25 +95,27 @@ create table s24240370.payments_ProfG_FP (
 )
 go
 
-
+--products
 create table s24240370.products_ProfG_FP (
     product_id INT PRIMARY KEY IDENTITY(1,1),
     product_name VARCHAR(100) NOT NULL,
 	producer VARCHAR(100) NOT NULL,
     category_id INT NOT NULL,
-    price DECIMAL(8, 2) NOT NULL,
-    stock INT NOT NULL DEFAULT 0,
+    price DECIMAL(8, 2) CHECK(price > 0) NOT NULL,
+    stock INT NOT NULL CHECK (stock >= 0) default 0,
 	reorder_level INT NOT NULL,
     description TEXT
 )
 go
 
+--categories
 create table s24240370.categories_ProfG_FP (
 	category_id INT PRIMARY KEY IDENTITY(1,1),
 	name VARCHAR(50) NOT NULL UNIQUE
 )
 go
 
+--order_product_details, normalization
 create table s24240370.order_product_details_ProfG_FP (
 	order_id INT NOT NULL,
 	product_id INT NOT NULL,
@@ -121,6 +125,16 @@ create table s24240370.order_product_details_ProfG_FP (
 )
 go
 
+--keep logs on customers
+create table s24240370.logs_ProfG_FP (
+	log_id int primary key identity(1,1),
+	entry_type varchar(100),
+	table_name varchar(100),
+	customer_id int,
+	full_name varchar(100),
+	change_time datetime default getdate()
+)
+go
 
 --ADDING FOREIGH KEYS
 
