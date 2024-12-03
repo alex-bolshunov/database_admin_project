@@ -54,7 +54,6 @@ join s24240370.emails_ProfG_FP e
 on c.customer_id = e.customer_id
 join s24240370.phone_numbers_ProfG_FP p
 on c.customer_id = p.customer_id
-where c.customer_id = 37
-
+where c.customer_id = 31
 
 

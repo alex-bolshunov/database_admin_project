@@ -38,7 +38,7 @@ as
 		end catch
 	end
 
-exec s24240370.cancel_order_ProfG_FP @order_id = 46, @payment_id  = 41
+exec s24240370.cancel_order_ProfG_FP @order_id = 24, @payment_id  = 24
 
 
 select o.order_id, p.payment_id, o.order_status

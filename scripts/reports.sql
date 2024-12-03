@@ -95,7 +95,7 @@ order by total_revenue desc
 --The report indicates the current inventory levels of all products: product names, stock quantities, and reorder levels.
 select p.product_id, p.product_name, c.name as category, p.stock as stock_quantity, p.reorder_level
 from s24240370.categories_ProfG_FP c
-join s24240370.products_ProfG_FP p
+right join s24240370.products_ProfG_FP p
 on c.category_id = p.category_id
 order by p.product_id
 
@@ -123,23 +123,20 @@ order by p.reorder_level
 --Order Status
 --What is the status of a particular order?
 --The report provides the status of a specified order: order id, name on the order, status, total price, number of products in the order, and comment. 
-declare @order_id int = 31
+declare @order_id int = 2
 exec s24240370.get_order_details_ProfG_FP  @order_id --accepts one required parameter order id, json 
 go
 
-select top 1 * from s24240370.orders_ProfG_FP
-order by order_id desc 
 
 --13
 --Order Quantity 
 --What is the number of orders placed within a specified period?
 --The report presents the information on the number of orders placed within a specified period of days: the number of days and number of orders.
-declare @num_of_days int = 100
+declare @num_of_days int = 120
 
 select @num_of_days as period_days, count(1) as number_of_orders from s24240370.orders_ProfG_FP o
 where o.order_date >= s24240370.get_date_specified_period_ProfG_FP(@num_of_days) and o.order_date <= getdate()
 go
-
 
 --14
 --Payment Status
@@ -164,3 +161,5 @@ group by p.picker_id, s24240370.get_full_name_ProfG_FP(p.picker_id)
 order by num_orders desc
 
 go
+
+

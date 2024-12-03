@@ -5,8 +5,8 @@
 --use project
 --go
 
-create schema s24240370
-go
+--create schema s24240370
+--go
 
 --drop schema s24240370
 
@@ -17,10 +17,23 @@ create table s24240370.customers_ProfG_FP(
     last_name VARCHAR(50) NOT NULL, 
     password VARCHAR(100) MASKED WITH (FUNCTION = 'default()') NOT NULL ,
     address VARCHAR(200) MASKED WITH (FUNCTION = 'default()'),
+	suspicious bit default 0,
     registration_date DATE DEFAULT GETDATE()
 )
 go
 
+
+--archive for customers
+create table s24240370.customers_archive_ProfG_FP(
+    customer_id INT PRIMARY KEY IDENTITY(1,1),
+	former_cust_id INT NOT NULL, 
+    first_name VARCHAR(50),
+	last_name VARCHAR(50) NOT NULL, 
+	primary_email VARCHAR(100),
+    address VARCHAR(200) MASKED WITH (FUNCTION = 'default()'),
+    registration_date DATE,
+	add_date DATE DEFAULT GETDATE()
+)
 
 --credit cards table
 create table s24240370.credit_cards_ProfG_FP(
@@ -100,7 +113,7 @@ create table s24240370.products_ProfG_FP (
     product_id INT PRIMARY KEY IDENTITY(1,1),
     product_name VARCHAR(100) NOT NULL,
 	producer VARCHAR(100) NOT NULL,
-    category_id INT NOT NULL,
+    category_id INT,
     price DECIMAL(8, 2) CHECK(price > 0) NOT NULL,
     stock INT NOT NULL CHECK (stock >= 0) default 0,
 	reorder_level INT NOT NULL,
@@ -132,7 +145,7 @@ create table s24240370.logs_ProfG_FP (
 	table_name varchar(100),
 	customer_id int,
 	full_name varchar(100),
-	change_time datetime default getdate()
+	entry_time datetime default getdate()
 )
 go
 
@@ -164,11 +177,10 @@ add constraint fk_orders_customers
 FOREIGN KEY (customer_id) REFERENCES s24240370.customers_ProfG_FP(customer_id) on delete set null
 go
 
-
 --pickers orders 
 alter table s24240370.pickers_orders_ProfG_FP
 add constraint fk_pickers
-FOREIGN KEY (picker_id) REFERENCES s24240370.pickers_ProfG_FP(picker_id);
+FOREIGN KEY (picker_id) REFERENCES s24240370.pickers_ProfG_FP(picker_id) on delete cascade;
 
 alter table s24240370.pickers_orders_ProfG_FP
 add constraint fk_orders
@@ -203,6 +215,5 @@ go
 --products
 alter table s24240370.products_ProfG_FP
 add constraint fk_category_id
-FOREIGN KEY(category_id) REFERENCES s24240370.categories_ProfG_FP(category_id)
+FOREIGN KEY(category_id) REFERENCES s24240370.categories_ProfG_FP(category_id) on delete set null;
 go
-
