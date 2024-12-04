@@ -48,12 +48,14 @@ go
 exec s24240370.add_customer_ProfG_FP 'Tina', 'Green', 'tina.green@example.com', '1001001000', '5f4dcc3b5aa765d61d8327deb882cf99'
 go
 
-select c.customer_id, c.first_name + ' ' + c.last_name as full_name, e.email_address, p.phone_number
+select top 1 c.customer_id, s24240370.get_full_name_ProfG_FP(c.customer_id) as full_name, e.email_address, p.phone_number
 from s24240370.customers_ProfG_FP c
 join s24240370.emails_ProfG_FP e
 on c.customer_id = e.customer_id
 join s24240370.phone_numbers_ProfG_FP p
 on c.customer_id = p.customer_id
-where c.customer_id = 31
+order by c.customer_id desc
+
+
 
 

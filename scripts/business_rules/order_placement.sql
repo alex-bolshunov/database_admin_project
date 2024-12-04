@@ -53,34 +53,34 @@ as
 go
 
 --declare required variables
---declare @order_details s24240370.order_details_type_ProfG_FP
---declare @cust_id int = 10
---declare @credit_card_id int = 15
---declare @order_date date = '2024-12-12'
+declare @order_details s24240370.order_details_type_ProfG_FP
+declare @cust_id int = 10
+declare @credit_card_id int = 15
+declare @order_date date = '2024-12-12'
 
 --insert values into table variable
---insert into @order_details
---(product_id, quantity,total_price)
---values
---(1, 10, 5),
---(2, 10, 3),
---(3, 10, 2)
+insert into @order_details
+(product_id, quantity,total_price)
+values
+(1, 10, 5),
+(2, 10, 3),
+(3, 10, 2)
 
 
 --create order 
---exec s24240370.add_order_ProfG_FP 
-	--@cust_id = @cust_id,
-	--@credit_card_id = @credit_card_id,
-	--@order_date = @order_date,
-	--@order_details = @order_details
---go
+exec s24240370.add_order_ProfG_FP 
+	@cust_id = @cust_id,
+	@credit_card_id = @credit_card_id,
+	@order_date = @order_date,
+	@order_details = @order_details
+go
 
 
---select * from s24240370.orders_ProfG_FP
---order by order_id desc
+select * from s24240370.orders_ProfG_FP
+order by order_id desc
 
 
---select c.customer_id, cc.credit_card_id from s24240370.customers_ProfG_FP c
---join s24240370.credit_cards_ProfG_FP cc
---on c.customer_id= cc.customer_id
---where c.customer_id = 10
+select c.customer_id, cc.credit_card_id from s24240370.customers_ProfG_FP c
+join s24240370.credit_cards_ProfG_FP cc
+on c.customer_id= cc.customer_id
+where c.customer_id = 10

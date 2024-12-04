@@ -38,4 +38,4 @@ as
 go
 
 
-exec s24240370.user_password_reset_ProfG_FP -1, 'password'
+exec s24240370.user_password_reset_ProfG_FP 1, '1A2B3'

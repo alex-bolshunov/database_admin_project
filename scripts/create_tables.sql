@@ -15,12 +15,14 @@ create table s24240370.customers_ProfG_FP(
     customer_id INT PRIMARY KEY IDENTITY(1,1),
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL, 
-    password VARCHAR(100) MASKED WITH (FUNCTION = 'default()') NOT NULL ,
+    password VARCHAR(100) MASKED WITH (FUNCTION = 'default()') NOT NULL,
     address VARCHAR(200) MASKED WITH (FUNCTION = 'default()'),
 	suspicious bit default 0,
     registration_date DATE DEFAULT GETDATE()
 )
 go
+
+
 
 
 --archive for customers
